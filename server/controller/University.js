@@ -1,9 +1,9 @@
-import UniversityModel from "../model/University.js";
+import UniversityModel from "../models/University.js";
 export const createUnitversity  = async (req, res) => {
     try {
         const univData = await UniversityModel.create({
             name: req.body.name,
-            image: req?.body?.filename,
+            image: req?.file?.filename,
         });
         if (univData)
             res
@@ -14,27 +14,41 @@ export const createUnitversity  = async (req, res) => {
         res.status(500).json({ message: "Error creating university", error: error.message });
     }
 };
+
 export const updateUniversity = async (req, res) => {
     try {
+        const updateData = {
+            name: req.body.name
+        };
+
+        if (req.file) {
+            updateData.image = req.file.filename;
+        }
+
         const univData = await UniversityModel.findByIdAndUpdate(
-            { _id: req.params.id },
-            {
-                image: req?.file?.filename,
-
-            },
-            { name: true },
-
+            req.params.id,
+            updateData,
+            { new: true, runValidators: true }
         );
-        if (univData)
-            res.status(200)
-                .send({ message: "University Updated succesfully", data: univData });
-        else res.status(404).send({ message: "University not found" });
+
+        if (univData) {
+            res.status(200).send({
+                message: "University Updated successfully",
+                data: univData
+            });
+        } else {
+            res.status(404).send({
+                message: "University not found"
+            });
+        }
 
     } catch (error) {
-        res.status(500).send({ message: error.message })
+        res.status(500).send({
+            message: error.message
+        });
     }
-
 };
+
 
 export const deleteUniversity = async(req,res)=>{
     try{

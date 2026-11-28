@@ -1,12 +1,17 @@
-import mongose from "mongose";
+import mongoose from "mongoose";
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import multer from "multer";
-import { createUnitversity } from "./controller/University";
-import { createDepartment, deleteDepartment, getDepartmentByUniversity, updateDepartment } from "./controller/Department";
-import { createProduct, deleteProduct, getProductDetails, getProductsByDepartment, updateProduct } from "./controller/Product";
-import { login, register } from "./controller/User";
+import {
+    createUnitversity,
+    updateUniversity ,
+    deleteUniversity ,
+    getUniversities 
+} from "./controller/University.js";
+import { createDepartment, deleteDepartment, getDepartmentByUniversity, updateDepartment } from "./controller/Department.js";
+import { createProduct, deleteProduct, getProductDetails, getProductsByDepartment, updateProduct, updateProductQty } from "./controller/Product.js";
+import { login, register } from "./controller/User.js";
 
 dotenv.config();
 const app = express();
@@ -24,10 +29,10 @@ const uploadUniv = multer({
     storage:storageUniv,
 });
 
-app.post("/university",uploadUniv.single("image"),createUnitversity);
-app.put("/university",uploadUniv.single("image"),updateUnitversity );
-app.delete("/university",deleteUnitversity);
-app.get("/university",getUnitversity);
+app.post("/university", uploadUniv.single("image"), createUnitversity);
+app.put("/university/:id", uploadUniv.single("image"), updateUniversity);
+app.delete("/university", deleteUniversity);
+app.get("/university", getUniversities);
 
 
 //Department Module
@@ -69,7 +74,15 @@ app.put("/updateProductQty",updateProductQty);
 app.post("/register",register);
 app.post("/login",login);
 
-mongose.connect(process.env.DB_URL).then((response) => {
+
+//Image Access
+
+app.use(express.static("uploadsUniv/"));
+app.use(express.static("uploadsDep/"));
+app.use(express.static("uploadsPrd/"));
+
+
+mongoose.connect(process.env.DB_URL).then((response) => {
     console.log("DB connected successfully");
     app.listen(process.env.PORT, () => {
         console.log(`Server is running on port ${process.env.PORT}`);

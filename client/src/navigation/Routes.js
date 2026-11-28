@@ -9,7 +9,7 @@ import DepartmentAdmin from "../container/admin/department/DepartmentAdmin";
 import ProductAdmin from "../container/admin/product/ProductAdmin";
 import Home from "../container/user/home/Home";
 import DepartmentUser from "../container/user/department/DepartmentUser";
-import ProductUser from "../container/user/product/ProductUser";
+import ProductUser from "../container/user/Product/ProductUser";
 import ProductDetail from "../container/user/productDetail/ProductDetail";
 
 const ROUTES = {
